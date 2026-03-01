@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech for Non-Technical Founders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --paper: #f5f0e8;
+    --red: #c23a22;
+    --red-dark: #9e2f1b;
+    --grey: #7a756b;
+    --grey-light: #b5b0a6;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --body: 'Newsreader', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--red); color: var(--paper); }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .hero-overline {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--red);
+  }
+  .hero-sub {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--grey);
+    max-width: 560px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .btn-read {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.6rem;
+    background: var(--red);
+    color: var(--paper);
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .btn-read:hover { background: var(--red-dark); }
+  .btn-read:active { transform: scale(0.98); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="hero-overline">Tech for Non-Technical Founders</div>
+  <h1>I run a tech company.<br>I didn't understand <em>the tech.</em><br>I'm fixing that.</h1>
+  <p class="hero-sub">Every week, I learn one computer science concept from scratch and write about it. Not as an engineer. As a founder who's tired of nodding along.</p>
+  <a href="articles/" class="btn-read">Read</a>
+</section>
+</body>
+</html>

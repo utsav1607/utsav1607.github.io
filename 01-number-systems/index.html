@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Systems — How Computers Count</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --serif: "Newsreader", Georgia, serif;
+      --sans: "Figtree", system-ui, -apple-system, sans-serif;
+      --mono: "JetBrains Mono", "SF Mono", monospace;
+
+      --bg: #FAF9F7;
+      --text: #2d2d2d;
+      --text-light: #666;
+      --brand: #4A90D9;
+      --brand-secondary: #7B61FF;
+      --brand-tertiary: #F5A623;
+      --brand-alt: #50C878;
+      --widget-bg: #F5F5F5;
+      --border: #D3D3D3;
+      --link: #4A90D9;
+
+      --content-width: 700px;
+      --layout-width: 900px;
+      --content-padding: 45px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 21px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--serif);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 20px 32px;
+      font-family: var(--sans);
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .logo-secondary {
+      color: var(--brand);
+      font-style: italic;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      margin-bottom: 2rem;
+      overflow: hidden;
+      border-radius: 12px;
+      max-width: var(--layout-width);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero__gradient {
+      background: linear-gradient(135deg, #4A90D9, #7B61FF);
+      padding: 3rem 2.5rem 2.5rem;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+    }
+    .hero__gradient::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.15);
+    }
+    .hero__anim {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+    }
+    .hero__text {
+      position: relative;
+      z-index: 2;
+    }
+    .post-title {
+      font-family: var(--sans);
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .post-subtitle {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.3;
+    }
+
+    .nutshell {
+      max-width: var(--content-width);
+      margin: 0 auto 2rem;
+      padding: 0 var(--content-padding);
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    hr.full-width {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    .toc-wrapper {
+      max-width: var(--content-width);
+      margin: 0 auto 2rem;
+      padding: 0 var(--content-padding);
+    }
+    .toc h4 {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.8rem;
+      color: var(--text);
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      padding: 0;
+    }
+    .toc ol li {
+      counter-increment: toc-counter;
+      margin-bottom: 0.3rem;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+    }
+    .toc ol li::before {
+      content: counter(toc-counter, upper-roman) ". ";
+      font-weight: 600;
+      color: var(--text-light);
+      display: inline-block;
+      width: 2.5rem;
+    }
+    .toc a {
+      color: var(--link);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    article { max-width: var(--layout-width); margin: 0 auto; }
+    .post-body {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 var(--content-padding);
+    }
+    .post-body p { margin-bottom: 1rem; }
+    .post-body em { font-style: italic; }
+    .post-body strong { font-weight: 700; }
+
+    .post-body ul, .post-body ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    .post-body li {
+      margin-bottom: 0.4rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      max-width: var(--layout-width);
+      margin: 3.5rem auto 0;
+      padding: 0 32px 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-number {
+      font-family: var(--sans);
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--text-light);
+      flex-shrink: 0;
+      min-width: 80px;
+      text-align: right;
+      line-height: 1;
+      opacity: 0.5;
+    }
+    .section-heading h2 {
+      font-family: var(--sans);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .widget {
+      background: var(--widget-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .widget .caption {
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 1rem;
+      line-height: 1.4;
+    }
+    .widget svg {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    .label--small {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      fill: var(--text);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--brand);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--brand);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .control-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(0,0,0,0.03);
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+    .control-panel label {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+      min-width: 120px;
+    }
+    .control-panel .value-display {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--brand);
+      font-weight: 600;
+    }
+
+    figure { margin: 1.5rem 0; }
+    figcaption {
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .sidenote {
+      border-left: 3px solid var(--brand);
+      padding: 0.8rem 1.2rem;
+      margin: 1.5rem 0;
+      background: rgba(74, 144, 217, 0.04);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .sidenote p { margin-bottom: 0.5rem; }
+    .sidenote p:last-child { margin-bottom: 0; }
+
+    .footnotes {
+      max-width: var(--content-width);
+      margin: 3rem auto 2rem;
+      padding: 2rem var(--content-padding) 0;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+    .footnotes ol { padding-left: 1.2rem; }
+    .footnotes li { margin-bottom: 0.8rem; line-height: 1.5; }
+    sup.fn-ref {
+      font-size: 0.6em;
+      color: var(--link);
+      cursor: pointer;
+    }
+
+    footer {
+      background: var(--text);
+      color: #fff;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      text-align: center;
+    }
+
+    .btn {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn:hover {
+      background: var(--widget-bg);
+      border-color: var(--brand);
+    }
+    .btn--primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+    .btn--primary:hover {
+      opacity: 0.9;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.8em;
+      background: rgba(74, 144, 217, 0.08);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      color: var(--brand);
+    }
+
+    .code-block {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      background: #2d2d2d;
+      color: #f0f0f0;
+      padding: 1rem 1.2rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    h3.subsection {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 2rem 0 0.8rem;
+    }
+
+    .color-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 4px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    @media (max-width: 768px) {
+      html { font-size: 18px; }
+      .post-title { font-size: 1.8rem; }
+      .section-heading h2 { font-size: 1.5rem; }
+      .section-number { font-size: 1.5rem; min-width: 50px; }
+      .post-body, .toc-wrapper, .nutshell { padding: 0 20px; }
+      .hero__gradient { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="logo">Number Systems<br><em class="logo-secondary">.explained</em></a>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero__gradient">
+      <svg class="hero__anim" id="hero-anim" viewBox="0 0 900 280" preserveAspectRatio="xMidYMid slice"></svg>
+      <div class="hero__text">
+        <h1 class="post-title">Number Systems</h1>
+        <h2 class="post-subtitle">How Computers Count &mdash; From Decimal to Binary to Hexadecimal</h2>
+      </div>
+    </div>
+  </header>
+
+  <!-- Nutshell Summary -->
+  <div class="nutshell">
+    Every number you have ever seen is built from a handful of symbols arranged in positions. Computers use just two symbols (binary), humans prefer ten (decimal), and engineers bridge the gap with sixteen (hexadecimal). Understanding how these three systems work &mdash; and why they exist &mdash; is the bedrock of every technical decision in your company.
+  </div>
+
+  <hr class="full-width" style="max-width: 900px; margin-left: auto; margin-right: auto;">
+
+  <!-- Table of Contents -->
+  <div class="toc-wrapper">
+    <div class="toc">
+      <h4>Contents</h4>
+      <ol>
+        <li><a href="#section-intro">Why Number Systems Matter</a></li>
+        <li><a href="#section-decimal">Decimal (Base-10)</a></li>
+        <li><a href="#section-binary">Binary (Base-2)</a></li>
+        <li><a href="#section-hex">Hexadecimal (Base-16)</a></li>
+        <li><a href="#section-reallife">Where You See These in Real Life</a></li>
+        <li><a href="#section-summary">The Big Picture</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Article -->
+  <article>
+
+    <!-- Introduction (no section heading) -->
+    <div class="post-body" id="section-intro">
+      <p>You use numbers every single day. Prices, dates, phone numbers, addresses. But have you ever stopped to think about <em>how</em> numbers actually work? Not the math &mdash; the <em>system</em> itself. Why do we write &ldquo;10&rdquo; when we run out of single digits? Why not &ldquo;A&rdquo; or some other symbol?</p>
+
+      <p>Understanding this is the key to understanding how computers think. And if you run a tech company, this is the bedrock everything else sits on &mdash; from how your app stores data, to why your designer writes <code>#FF5733</code> for a color, to why your server has 4 GB of RAM and not 4,000,000,000 bytes (spoiler: it actually has 4,294,967,296).</p>
+
+      <p>Let&rsquo;s start from the very beginning.</p>
+    </div>
+
+    <!-- Section I: Decimal -->
+    <div class="section-heading">
+      <span class="section-number">I.</span>
+      <h2 id="section-decimal">Decimal (Base-10)</h2>
+    </div>
+    <div class="post-body">
+      <h3 class="subsection">Why is it called &ldquo;Base 10&rdquo;?</h3>
+      <p>The decimal system is called &ldquo;base 10&rdquo; for one simple reason: it uses <strong>10 symbols</strong>.</p>
+
+      <div class="code-block">0  1  2  3  4  5  6  7  8  9</div>
+
+      <p>That&rsquo;s it. Ten symbols. Every number you have ever written &mdash; from your bank balance to the national debt &mdash; is built from just these ten symbols arranged in different positions.</p>
+
+      <p>Why ten? Almost certainly because humans have ten fingers. If we had eight fingers, we&rsquo;d probably use base 8. (This isn&rsquo;t a joke &mdash; some cultures historically used base 12 or base 20 for exactly these kinds of anatomical reasons.)</p>
+
+      <h3 class="subsection">The Position Game</h3>
+      <p>Here is the crucial insight that makes everything else in this article click:</p>
+
+      <p><strong>The value of a digit depends on its position.</strong></p>
+
+      <p>The digit &ldquo;3&rdquo; doesn&rsquo;t always mean three. In the number 300, that &ldquo;3&rdquo; means three hundred. In 3,000, it means three thousand. Same symbol, wildly different value.</p>
+
+      <p>Each position in a base-10 number represents a <strong>power of 10</strong>:</p>
+
+      <div class="code-block">Position:     ...  3        2        1        0
+Power of 10:  ...  10^3     10^2     10^1     10^0
+Value:        ...  1,000    100      10       1</div>
+
+      <!-- Interactive 1: Position Value Decomposer -->
+      <div class="widget fade-in" id="decomposer-widget">
+        <svg id="decomposer-svg" viewBox="0 0 600 260"></svg>
+        <div class="control-panel">
+          <label>
+            Decimal Number
+            <input type="range" id="decomposer-slider" min="0" max="9999" value="4827" step="1">
+            <span class="value-display" id="decomposer-val">4,827</span>
+          </label>
+        </div>
+        <div class="caption">Drag the slider to pick any number from 0 to 9,999 and watch it decompose into positional values. Each digit&rsquo;s contribution is its face value multiplied by its power of 10.</div>
+      </div>
+
+      <p>You already knew this. You learned it in elementary school as &ldquo;thousands, hundreds, tens, ones.&rdquo; But now notice the <em>pattern</em>: each position&rsquo;s value is the base (10) raised to the position number (starting from 0 on the right).</p>
+
+      <h3 class="subsection">Why Does This Matter?</h3>
+      <p>Because <strong>every number base works exactly the same way</strong>. The only things that change are:</p>
+      <ol>
+        <li>How many symbols you have</li>
+        <li>What number you raise to each power</li>
+      </ol>
+      <p>Once you understand the position game in base 10, you understand it in <em>every</em> base. Binary, hexadecimal, octal, base 7, base 42 &mdash; they all follow this identical logic.</p>
+
+      <h3 class="subsection">Carrying: What Happens When You Run Out of Symbols</h3>
+      <p>In decimal, when you count up and reach 9, you&rsquo;ve used your last symbol. What do you do? You can&rsquo;t write &ldquo;10&rdquo; using a single digit &mdash; there is no single symbol for ten in base 10. So you:</p>
+      <ol>
+        <li>Reset the current position to 0</li>
+        <li>Add 1 to the next position to the left</li>
+      </ol>
+      <p>This is called <strong>carrying</strong>. It&rsquo;s so natural to you in decimal that you don&rsquo;t even think about it. Every base does this. In base 2, you run out of symbols much sooner &mdash; after just 1. In base 16, you don&rsquo;t run out until 15. But the carry mechanism is identical.</p>
+    </div>
+
+    <!-- Section II: Binary -->
+    <div class="section-heading">
+      <span class="section-number">II.</span>
+      <h2 id="section-binary">Binary (Base-2)</h2>
+    </div>
+    <div class="post-body">
+      <h3 class="subsection">Why Binary? It&rsquo;s Not a Choice &mdash; It&rsquo;s Physics</h3>
+      <p>Your computer&rsquo;s processor is made of <strong>transistors</strong> &mdash; microscopic electronic switches. A modern chip has billions of them. Each transistor can be in one of two states:</p>
+      <ul>
+        <li><strong>On</strong> (electric current is flowing &mdash; high voltage)</li>
+        <li><strong>Off</strong> (no current &mdash; low voltage)</li>
+      </ul>
+      <p>That&rsquo;s it. On or off. There&rsquo;s no &ldquo;medium&rdquo; or &ldquo;sort of on.&rdquo; Because each transistor has exactly two states, the natural number system for computers uses exactly <strong>two symbols</strong>: <code>0</code> (off) and <code>1</code> (on).</p>
+
+      <p>This is the <strong>binary</strong> system &mdash; base 2. Every single thing your computer does &mdash; running apps, playing video, sending email &mdash; ultimately reduces to billions of transistors flipping between 0 and 1, billions of times per second.</p>
+
+      <h3 class="subsection">Converting Decimal to Binary</h3>
+      <p>Let&rsquo;s convert a decimal number to binary, step by step. The method: start with the largest power of 2 that fits, subtract it, and repeat.</p>
+
+      <!-- Interactive 2: Decimal-to-Binary Step-by-Step -->
+      <div class="widget fade-in" id="dec2bin-widget">
+        <svg id="dec2bin-svg" viewBox="0 0 600 340"></svg>
+        <div class="control-panel" style="justify-content: center; gap: 0.5rem;">
+          <button class="btn" id="dec2bin-prev" disabled>&larr; Prev</button>
+          <span class="value-display" id="dec2bin-step">Step 1 of 6</span>
+          <button class="btn btn--primary" id="dec2bin-next">Next &rarr;</button>
+        </div>
+        <div class="caption" id="dec2bin-caption">Walk through the conversion of decimal 42 to binary using the subtraction method. Each step asks: does this power of 2 fit into what remains?</div>
+      </div>
+
+      <p>This works for any number. The pattern is always the same: go through the powers of 2 from largest to smallest, writing a 1 if it fits and a 0 if it doesn&rsquo;t.</p>
+
+      <h3 class="subsection">The Power Formula: N Bits = 2<sup>N</sup> Values</h3>
+      <p>This is one of the most important formulas in computing. If you have N bits, you can represent 2<sup>N</sup> different values (from 0 up to 2<sup>N</sup> - 1).</p>
+
+      <!-- Interactive 3: N Bits Explorer -->
+      <div class="widget fade-in" id="nbits-widget">
+        <svg id="nbits-svg" viewBox="0 0 600 320"></svg>
+        <div class="control-panel">
+          <label>
+            Number of Bits (N)
+            <input type="range" id="nbits-slider" min="1" max="16" value="8" step="1">
+            <span class="value-display" id="nbits-val">8 bits</span>
+          </label>
+        </div>
+        <div class="caption">Slide to change the number of bits. Watch how the number of possible values doubles with each additional bit &mdash; this is exponential growth in action.</div>
+      </div>
+
+      <div class="sidenote">
+        <p><strong>Why this matters for your business:</strong> When your engineer says &ldquo;we need to migrate from 32-bit IDs to 64-bit IDs,&rdquo; they&rsquo;re saying you&rsquo;re running out of room. With 32-bit IDs, you can have about 4.3 billion unique records. 64-bit IDs give you essentially infinite room to grow.</p>
+      </div>
+
+      <h3 class="subsection">Binary Arithmetic: Addition</h3>
+      <p>Binary addition is beautifully simple because there are only four possible cases:</p>
+      <div class="code-block">0 + 0 = 0       (zero plus zero is zero)
+0 + 1 = 1       (zero plus one is one)
+1 + 0 = 1       (one plus zero is one)
+1 + 1 = 10      (one plus one &mdash; carry! Write 0, carry the 1)</div>
+
+      <p>That last one is exactly like 5 + 5 = 10 in decimal. You&rsquo;ve run out of symbols, so you carry.</p>
+
+      <p>Your computer does exactly this &mdash; but with 64 digits at a time, billions of times per second. Every calculation your app performs, every financial transaction, every physics simulation in a game &mdash; it all comes down to this basic operation happening at incredible speed.</p>
+    </div>
+
+    <!-- Section III: Hexadecimal -->
+    <div class="section-heading">
+      <span class="section-number">III.</span>
+      <h2 id="section-hex">Hexadecimal (Base-16)</h2>
+    </div>
+    <div class="post-body">
+      <h3 class="subsection">The Problem with Binary</h3>
+      <p>Binary is great for computers but terrible for humans. Look at this binary number:</p>
+      <div class="code-block">11010110101011111110001000101100</div>
+      <p>Can you tell at a glance what it represents? Can you spot a typo? Of course not. It&rsquo;s a wall of ones and zeros.</p>
+
+      <p>What engineers needed was a system that is compact, converts to and from binary trivially, and is still human-readable. The answer: <strong>hexadecimal</strong>, or <strong>hex</strong> for short. Base 16.</p>
+
+      <h3 class="subsection">Why Base 16? The Magic of Powers of 2</h3>
+      <p>Here&rsquo;s the key insight: 16 is a power of 2. Specifically, 16 = 2<sup>4</sup>. This means <strong>one hexadecimal digit maps to exactly four binary digits</strong>. Always. No exceptions. No rounding. No complicated math. Just a direct, clean substitution.</p>
+
+      <p>Base 16 needs 16 symbols. We only have 10 digit symbols (0&ndash;9), so hex borrows the first six letters of the alphabet: A = 10, B = 11, C = 12, D = 13, E = 14, F = 15.</p>
+
+      <!-- Interactive 4: Hex-Binary Converter -->
+      <div class="widget fade-in" id="hexbin-widget">
+        <svg id="hexbin-svg" viewBox="0 0 600 300"></svg>
+        <div class="control-panel">
+          <label>
+            Decimal Value (0&ndash;255)
+            <input type="range" id="hexbin-slider" min="0" max="255" value="214" step="1">
+            <span class="value-display" id="hexbin-val">214</span>
+          </label>
+        </div>
+        <div class="caption">Slide to pick any value from 0 to 255 (one byte). See how the same number looks in decimal, binary, and hexadecimal &mdash; and how each hex digit maps directly to a group of 4 binary digits.</div>
+      </div>
+
+      <h3 class="subsection">The 0x Prefix</h3>
+      <p>When engineers write hex numbers, they often add the prefix <code>0x</code> to signal &ldquo;this is hexadecimal, not decimal&rdquo;:</p>
+      <div class="code-block">0xFF      means hex FF        (decimal 255)
+0x1A      means hex 1A        (decimal 26)
+0xDEAD    means hex DEAD      (decimal 57005)</div>
+
+      <p>Without the prefix, &ldquo;10&rdquo; is ambiguous &mdash; is it decimal ten or hex sixteen? The <code>0x</code> removes all doubt. You&rsquo;ll see this prefix in programming languages, debugger output, memory addresses, and technical documentation.</p>
+
+      <div class="sidenote">
+        <p><strong>Fun hex values:</strong> Programmers sometimes use hex values that spell words. <code>0xDEADBEEF</code> marks uninitialized memory. <code>0xCAFEBABE</code> is the magic number at the start of every Java class file. <code>0xFEEDFACE</code> appears in macOS executables. They serve real purposes &mdash; they&rsquo;re easy to spot in a wall of hex data.</p>
+      </div>
+    </div>
+
+    <!-- Section IV: Real Life -->
+    <div class="section-heading">
+      <span class="section-number">IV.</span>
+      <h2 id="section-reallife">Where You See These in Real Life</h2>
+    </div>
+    <div class="post-body">
+      <h3 class="subsection">Color Codes: #FF5733</h3>
+      <p>If you&rsquo;ve ever worked with a designer or looked at CSS, you&rsquo;ve seen hex color codes. A color on a screen is made by mixing three colors of light: <strong>R</strong>ed, <strong>G</strong>reen, and <strong>B</strong>lue. Each channel gets one byte &mdash; a value from 0 (none of that color) to 255 (maximum intensity). In hex, that&rsquo;s 00 to FF.</p>
+
+      <p>A hex color code packs all three channels together: <code>#RRGGBB</code></p>
+
+      <!-- Interactive 5: RGB Color Explorer -->
+      <div class="widget fade-in" id="color-widget">
+        <svg id="color-svg" viewBox="0 0 600 280"></svg>
+        <div class="control-panel">
+          <label>
+            Red (R)
+            <input type="range" id="color-r" min="0" max="255" value="255" step="1">
+            <span class="value-display" id="color-r-val">255</span>
+          </label>
+          <label>
+            Green (G)
+            <input type="range" id="color-g" min="0" max="255" value="87" step="1">
+            <span class="value-display" id="color-g-val">87</span>
+          </label>
+          <label>
+            Blue (B)
+            <input type="range" id="color-b" min="0" max="255" value="51" step="1">
+            <span class="value-display" id="color-b-val">51</span>
+          </label>
+        </div>
+        <div class="caption">Mix your own color by adjusting the Red, Green, and Blue channels. Each channel is one byte (0&ndash;255), and the hex code is the three values written in base 16.</div>
+      </div>
+
+      <h3 class="subsection">Memory and Network Addresses</h3>
+      <p>When your engineers debug a crash, they might see something like <code>0x7FFF5FBFF8AC</code>. That&rsquo;s a memory address &mdash; a location in your computer&rsquo;s RAM, expressed in hex because it would be 48 ones and zeros in binary.</p>
+
+      <p>Every network device has a unique MAC address like <code>A1:B2:C3:D4:E5:F6</code> &mdash; six pairs of hex digits, each pair being one byte. IPv6 addresses use 128 bits, written as eight groups of four hex digits: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>.</p>
+
+      <h3 class="subsection">File Sizes: Why 1 KB Is Not 1,000 Bytes</h3>
+      <p>You&rsquo;ve seen file sizes: KB, MB, GB, TB. These are based on powers of 2:</p>
+      <div class="code-block">1 KB  =  1,024 bytes        (2^10)
+1 MB  =  1,048,576 bytes    (2^20)
+1 GB  =  1,073,741,824      (2^30)
+1 TB  =  1,099,511,627,776  (2^40)</div>
+
+      <p>This is why you plug in a &ldquo;1 TB&rdquo; drive and your Mac says it&rsquo;s &ldquo;931 GB.&rdquo; The drive manufacturer used decimal (1 trillion bytes), but your operating system reports in binary (where 1 TB = 1,099,511,627,776 bytes). The &ldquo;missing&rdquo; gigabytes aren&rsquo;t missing &mdash; they&rsquo;re the difference between decimal and binary definitions of &ldquo;giga.&rdquo;</p>
+    </div>
+
+    <!-- Section V: Summary -->
+    <div class="section-heading">
+      <span class="section-number">V.</span>
+      <h2 id="section-summary">The Big Picture</h2>
+    </div>
+    <div class="post-body">
+      <p><strong>Decimal (base 10)</strong> is the number system you grew up with. We made its mechanics explicit &mdash; position values, powers of the base, carrying &mdash; because those same mechanics apply to every other base.</p>
+
+      <p><strong>Binary (base 2)</strong> is how computers actually store and process all data. It exists because transistors have two states (on/off), not because someone chose it. Every number, every character of text, every pixel of every image in your app is ultimately stored as a sequence of 0s and 1s.</p>
+
+      <p><strong>Hexadecimal (base 16)</strong> exists because humans need a way to read binary data without going cross-eyed. It&rsquo;s a compact, human-friendly shorthand where one hex digit perfectly represents four binary digits. You&rsquo;ll see it in color codes, memory addresses, network identifiers, and throughout your codebase.</p>
+
+      <div class="sidenote">
+        <p><strong>The takeaway:</strong> As a founder, you don&rsquo;t need to do these conversions daily. But understanding <em>why</em> your product&rsquo;s color is <code>#FF5733</code>, <em>why</em> your server has 4,294,967,296 bytes of RAM instead of a round number, and <em>why</em> there&rsquo;s always a power of 2 lurking behind every technical spec &mdash; that understanding makes you a better leader of a technical team.</p>
+      </div>
+
+      <p>You now speak a little bit of the language your computer thinks in.</p>
+
+      <p><em>Next up: How computers represent text, images, and sound using nothing but numbers (which are nothing but binary, which is nothing but transistors switching on and off).</em></p>
+    </div>
+
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>Built as an interactive explainer. No external JavaScript libraries &mdash; pure vanilla JS + inline SVG.</p>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script>
+    // ===== SCROLL ANIMATION OBSERVER =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ===== SVG UTILITIES =====
+    function svgEl(tag, attrs) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+      return el;
+    }
+
+    function svgText(text, x, y, opts) {
+      opts = opts || {};
+      const el = svgEl('text', {
+        x: x, y: y,
+        'text-anchor': opts.anchor || 'middle',
+        'font-family': opts.font || 'Figtree, sans-serif',
+        'font-size': opts.size || '14',
+        'font-weight': opts.weight || '400',
+        'fill': opts.fill || '#2d2d2d'
+      });
+      if (opts.attrs) {
+        for (const [k, v] of Object.entries(opts.attrs)) el.setAttribute(k, v);
+      }
+      el.textContent = text;
+      return el;
+    }
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function lerpColor(c1, c2, t) {
+      var h2r = function(c) { return [parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16)]; };
+      var rgb1 = h2r(c1), rgb2 = h2r(c2);
+      return 'rgb(' + Math.round(lerp(rgb1[0],rgb2[0],t)) + ',' + Math.round(lerp(rgb1[1],rgb2[1],t)) + ',' + Math.round(lerp(rgb1[2],rgb2[2],t)) + ')';
+    }
+
+    function fmt(n, d) { return n.toLocaleString(undefined, { minimumFractionDigits: d||0, maximumFractionDigits: d||0 }); }
+
+    // ===== HERO ANIMATION =====
+    (function() {
+      var svg = document.getElementById('hero-anim');
+      if (!svg) return;
+      var ns = 'http://www.w3.org/2000/svg';
+      var icons = [];
+      // Create floating binary digits and hex symbols for hero background
+      var symbols = ['0','1','0','1','A','F','0','1','#','0','1','B','0','1','E','0','1','C','D','0','1','1','0','F','F'];
+      for (var i = 0; i < 30; i++) {
+        var g = document.createElementNS(ns, 'g');
+        var x = Math.random() * 860 + 20;
+        var y = Math.random() * 240 + 20;
+        var size = Math.random() * 16 + 12;
+        var txt = document.createElementNS(ns, 'text');
+        txt.setAttribute('font-family', 'Figtree, sans-serif');
+        txt.setAttribute('font-size', size);
+        txt.setAttribute('font-weight', '700');
+        txt.setAttribute('fill', 'rgba(255,255,255,0.1)');
+        txt.setAttribute('text-anchor', 'middle');
+        txt.textContent = symbols[i % symbols.length];
+        g.setAttribute('transform', 'translate(' + x + ',' + y + ')');
+        g.appendChild(txt);
+        svg.appendChild(g);
+        icons.push({ el: g, x: x, y: y, speed: Math.random() * 0.3 + 0.1, phase: Math.random() * Math.PI * 2 });
+      }
+      var frame = 0;
+      function animate() {
+        frame++;
+        icons.forEach(function(icon) {
+          icon.el.setAttribute('transform', 'translate(' + (icon.x + Math.cos(frame * 0.008 + icon.phase) * 6) + ',' + (icon.y + Math.sin(frame * 0.01 + icon.phase) * 10) + ')');
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ===== INTERACTIVE 1: POSITION VALUE DECOMPOSER =====
+    (function() {
+      var svg = document.getElementById('decomposer-svg');
+      if (!svg) return;
+      var W = 600, H = 260;
+
+      function draw(num) {
+        svg.innerHTML = '';
+        var str = String(num);
+        var digits = str.split('');
+        var n = digits.length;
+
+        // Title
+        svg.appendChild(svgText('Decomposing  ' + fmt(num), W/2, 30, { size: '18', weight: '700', fill: '#2d2d2d' }));
+
+        var colors = ['#4A90D9', '#7B61FF', '#F5A623', '#50C878'];
+        var startX = (W - n * 130) / 2 + 65;
+
+        // Draw each digit column
+        for (var i = 0; i < n; i++) {
+          var x = startX + i * 130;
+          var d = parseInt(digits[i]);
+          var pos = n - 1 - i;
+          var power = Math.pow(10, pos);
+          var contribution = d * power;
+          var col = colors[pos % colors.length];
+
+          // Background box
+          svg.appendChild(svgEl('rect', { x: x - 50, y: 50, width: 100, height: 180, rx: 8, fill: col, opacity: '0.08' }));
+
+          // Digit
+          svg.appendChild(svgText(String(d), x, 90, { size: '36', weight: '800', fill: col }));
+
+          // Position label
+          svg.appendChild(svgText('position ' + pos, x, 115, { size: '11', fill: '#999' }));
+
+          // Power of 10
+          svg.appendChild(svgText('10^' + pos + ' = ' + fmt(power), x, 140, { size: '12', weight: '600', fill: '#666' }));
+
+          // Multiplication
+          svg.appendChild(svgText(d + ' \u00D7 ' + fmt(power), x, 168, { size: '13', fill: col }));
+
+          // Contribution
+          svg.appendChild(svgText('= ' + fmt(contribution), x, 192, { size: '15', weight: '700', fill: col }));
+
+          // Plus sign between columns
+          if (i < n - 1) {
+            svg.appendChild(svgText('+', x + 65, 192, { size: '18', weight: '700', fill: '#ccc' }));
+          }
+        }
+
+        // Result line
+        svg.appendChild(svgEl('line', { x1: startX - 50, y1: 210, x2: startX + (n-1) * 130 + 50, y2: 210, stroke: '#ddd', 'stroke-width': '1' }));
+        svg.appendChild(svgText('= ' + fmt(num), W/2, 240, { size: '22', weight: '800', fill: '#2d2d2d' }));
+      }
+
+      var slider = document.getElementById('decomposer-slider');
+      slider.addEventListener('input', function() {
+        var v = parseInt(slider.value);
+        document.getElementById('decomposer-val').textContent = fmt(v);
+        draw(v);
+      });
+      draw(4827);
+    })();
+
+    // ===== INTERACTIVE 2: DECIMAL TO BINARY STEP-BY-STEP =====
+    (function() {
+      var svg = document.getElementById('dec2bin-svg');
+      if (!svg) return;
+      var W = 600, H = 340;
+      var target = 42;
+      var powers = [32, 16, 8, 4, 2, 1];
+      var bits = [];
+      // Pre-calculate each step
+      var remainder = target;
+      for (var p = 0; p < powers.length; p++) {
+        if (powers[p] <= remainder) {
+          bits.push(1);
+          remainder -= powers[p];
+        } else {
+          bits.push(0);
+        }
+      }
+
+      var steps = [];
+      var rem = target;
+      for (var s = 0; s < powers.length; s++) {
+        var fit = powers[s] <= rem;
+        steps.push({
+          power: powers[s],
+          fits: fit,
+          bit: fit ? 1 : 0,
+          remainderBefore: rem,
+          remainderAfter: fit ? rem - powers[s] : rem,
+          bitsBuilt: bits.slice(0, s + 1)
+        });
+        if (fit) rem -= powers[s];
+      }
+
+      var current = 0;
+      var prevBtn = document.getElementById('dec2bin-prev');
+      var nextBtn = document.getElementById('dec2bin-next');
+      var stepLabel = document.getElementById('dec2bin-step');
+      var captionEl = document.getElementById('dec2bin-caption');
+
+      function render() {
+        svg.innerHTML = '';
+        var step = steps[current];
+
+        // Title
+        svg.appendChild(svgText('Converting ' + target + ' to Binary', W/2, 28, { size: '17', weight: '700' }));
+
+        // Powers of 2 row
+        var startX = 75;
+        var gap = 88;
+        svg.appendChild(svgText('POWERS OF 2', 40, 65, { size: '11', weight: '600', fill: '#999', anchor: 'start' }));
+
+        for (var i = 0; i < powers.length; i++) {
+          var x = startX + i * gap;
+          var isActive = i === current;
+          var isPast = i < current;
+
+          // Background highlight
+          if (isActive) {
+            svg.appendChild(svgEl('rect', { x: x - 30, y: 72, width: 60, height: 40, rx: 6, fill: step.fits ? '#4A90D9' : '#F5A623', opacity: '0.15' }));
+          }
+
+          // Power value
+          svg.appendChild(svgText(String(powers[i]), x, 98, {
+            size: isActive ? '20' : '16',
+            weight: isActive ? '800' : '400',
+            fill: isPast ? '#ccc' : (isActive ? (step.fits ? '#4A90D9' : '#F5A623') : '#666')
+          }));
+        }
+
+        // Question
+        var questionY = 145;
+        svg.appendChild(svgText('Does ' + step.power + ' fit into ' + step.remainderBefore + '?', W/2, questionY, { size: '16', weight: '600', fill: '#2d2d2d' }));
+
+        if (step.fits) {
+          svg.appendChild(svgText('Yes! (' + step.power + ' \u2264 ' + step.remainderBefore + ')  \u2192  Write 1', W/2, questionY + 28, { size: '14', fill: '#4A90D9', weight: '600' }));
+          svg.appendChild(svgText('Remainder: ' + step.remainderBefore + ' \u2212 ' + step.power + ' = ' + step.remainderAfter, W/2, questionY + 52, { size: '13', fill: '#666' }));
+        } else {
+          svg.appendChild(svgText('No (' + step.power + ' > ' + step.remainderBefore + ')  \u2192  Write 0', W/2, questionY + 28, { size: '14', fill: '#F5A623', weight: '600' }));
+          svg.appendChild(svgText('Remainder stays: ' + step.remainderAfter, W/2, questionY + 52, { size: '13', fill: '#666' }));
+        }
+
+        // Binary result building
+        var binaryY = 250;
+        svg.appendChild(svgText('BINARY RESULT', 40, binaryY - 5, { size: '11', weight: '600', fill: '#999', anchor: 'start' }));
+
+        for (var j = 0; j < powers.length; j++) {
+          var bx = startX + j * gap;
+          if (j <= current) {
+            var bitVal = steps[j].bit;
+            var bitColor = bitVal === 1 ? '#4A90D9' : '#D3D3D3';
+            svg.appendChild(svgEl('rect', { x: bx - 22, y: binaryY, width: 44, height: 44, rx: 6, fill: bitColor, opacity: bitVal === 1 ? '0.15' : '0.3' }));
+            svg.appendChild(svgText(String(bitVal), bx, binaryY + 30, { size: '22', weight: '800', fill: bitVal === 1 ? '#4A90D9' : '#999' }));
+          } else {
+            svg.appendChild(svgEl('rect', { x: bx - 22, y: binaryY, width: 44, height: 44, rx: 6, fill: 'none', stroke: '#ddd', 'stroke-dasharray': '4,4', 'stroke-width': '1' }));
+            svg.appendChild(svgText('?', bx, binaryY + 30, { size: '18', fill: '#ddd' }));
+          }
+        }
+
+        // Final result on last step
+        if (current === steps.length - 1) {
+          var resultStr = bits.join('');
+          svg.appendChild(svgText(target + ' in binary = ' + resultStr, W/2, binaryY + 70, { size: '16', weight: '700', fill: '#4A90D9' }));
+        }
+
+        stepLabel.textContent = 'Step ' + (current + 1) + ' of ' + steps.length;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === steps.length - 1;
+      }
+
+      prevBtn.addEventListener('click', function() { if (current > 0) { current--; render(); } });
+      nextBtn.addEventListener('click', function() { if (current < steps.length - 1) { current++; render(); } });
+      render();
+    })();
+
+    // ===== INTERACTIVE 3: N BITS EXPLORER =====
+    (function() {
+      var svg = document.getElementById('nbits-svg');
+      if (!svg) return;
+      var W = 600, H = 320;
+
+      function draw(n) {
+        svg.innerHTML = '';
+        var totalValues = Math.pow(2, n);
+        var maxVal = totalValues - 1;
+
+        // Title
+        svg.appendChild(svgText(n + ' bits = 2^' + n + ' = ' + fmt(totalValues) + ' possible values', W/2, 28, { size: '16', weight: '700', fill: '#2d2d2d' }));
+        svg.appendChild(svgText('(0 to ' + fmt(maxVal) + ')', W/2, 50, { size: '13', fill: '#999' }));
+
+        // Draw bit boxes at the top
+        var bitBoxSize = 30;
+        var bitGap = 6;
+        var totalBitWidth = n * bitBoxSize + (n - 1) * bitGap;
+        var bitStartX = (W - totalBitWidth) / 2;
+        var bitY = 68;
+
+        for (var i = 0; i < n; i++) {
+          var bx = bitStartX + i * (bitBoxSize + bitGap);
+          svg.appendChild(svgEl('rect', { x: bx, y: bitY, width: bitBoxSize, height: bitBoxSize, rx: 4, fill: '#4A90D9', opacity: 0.1 + (i / n) * 0.3 }));
+          svg.appendChild(svgText(String(i < n ? 1 : 0), bx + bitBoxSize/2, bitY + 21, { size: '14', weight: '700', fill: '#4A90D9' }));
+        }
+
+        // Bar chart: show exponential growth from 1 bit to N bits
+        var chartY = 120;
+        var chartH = 150;
+        var chartW = 480;
+        var chartX = 70;
+        var maxPow = Math.pow(2, 16); // Max for scale
+
+        // Axis
+        svg.appendChild(svgEl('line', { x1: chartX, y1: chartY, x2: chartX, y2: chartY + chartH, stroke: '#ddd', 'stroke-width': '1' }));
+        svg.appendChild(svgEl('line', { x1: chartX, y1: chartY + chartH, x2: chartX + chartW, y2: chartY + chartH, stroke: '#ddd', 'stroke-width': '1' }));
+
+        var barCount = Math.min(n, 16);
+        var barGapRatio = 0.3;
+        var barUnitW = chartW / barCount;
+        var barW = barUnitW * (1 - barGapRatio);
+
+        for (var b = 1; b <= barCount; b++) {
+          var val = Math.pow(2, b);
+          var barH = Math.max(3, (Math.log2(val) / Math.log2(maxPow)) * chartH);
+          var x = chartX + (b - 1) * barUnitW + (barUnitW - barW) / 2;
+          var y = chartY + chartH - barH;
+
+          var isHighlighted = b === n;
+          var color = isHighlighted ? '#4A90D9' : '#D3D3D3';
+          var opacity = isHighlighted ? '0.9' : '0.4';
+
+          svg.appendChild(svgEl('rect', { x: x, y: y, width: barW, height: barH, rx: 3, fill: color, opacity: opacity }));
+
+          // Label on bar
+          if (isHighlighted || barCount <= 8) {
+            svg.appendChild(svgText(fmt(val), x + barW/2, y - 6, { size: '11', weight: isHighlighted ? '700' : '400', fill: isHighlighted ? '#4A90D9' : '#999' }));
+          }
+
+          // X-axis label
+          svg.appendChild(svgText(String(b), x + barW/2, chartY + chartH + 16, { size: '11', fill: isHighlighted ? '#4A90D9' : '#999', weight: isHighlighted ? '700' : '400' }));
+        }
+
+        svg.appendChild(svgText('Bits', chartX + chartW/2, chartY + chartH + 36, { size: '12', fill: '#999' }));
+        svg.appendChild(svgText('Values', 30, chartY + chartH/2, { size: '12', fill: '#999', attrs: { transform: 'rotate(-90, 30, ' + (chartY + chartH/2) + ')' } }));
+
+        // Real-world context
+        var contextY = H - 15;
+        var context = '';
+        if (n === 1) context = '1 bit: on or off, yes or no, true or false';
+        else if (n === 2) context = '2 bits: like choosing from 4 options';
+        else if (n === 3) context = '3 bits: enough for 8 values (0-7)';
+        else if (n === 4) context = '4 bits = 1 nibble: one hexadecimal digit (0-F)';
+        else if (n === 5) context = '5 bits: 32 values, enough for the English alphabet';
+        else if (n === 6) context = '6 bits: 64 values (used in Base64 encoding)';
+        else if (n === 7) context = '7 bits: 128 values (original ASCII character set)';
+        else if (n === 8) context = '8 bits = 1 byte: 256 values (0-255), one color channel';
+        else if (n === 9) context = '9 bits: 512 values';
+        else if (n === 10) context = '10 bits: 1,024 values (1 KB of addresses)';
+        else if (n === 11) context = '11 bits: 2,048 values';
+        else if (n === 12) context = '12 bits: 4,096 values';
+        else if (n === 13) context = '13 bits: 8,192 values';
+        else if (n === 14) context = '14 bits: 16,384 values';
+        else if (n === 15) context = '15 bits: 32,768 values';
+        else if (n === 16) context = '16 bits: 65,536 values (16-bit audio, old game consoles)';
+
+        svg.appendChild(svgText(context, W/2, contextY, { size: '12', fill: '#7B61FF', weight: '600' }));
+      }
+
+      var slider = document.getElementById('nbits-slider');
+      slider.addEventListener('input', function() {
+        var v = parseInt(slider.value);
+        document.getElementById('nbits-val').textContent = v + ' bits';
+        draw(v);
+      });
+      draw(8);
+    })();
+
+    // ===== INTERACTIVE 4: HEX-BINARY CONVERTER =====
+    (function() {
+      var svg = document.getElementById('hexbin-svg');
+      if (!svg) return;
+      var W = 600, H = 300;
+
+      function toHex(n) {
+        var h = n.toString(16).toUpperCase();
+        return h.length === 1 ? '0' + h : h;
+      }
+      function toBin(n) {
+        var b = n.toString(2);
+        while (b.length < 8) b = '0' + b;
+        return b;
+      }
+      function nibbleToBin(hexChar) {
+        var v = parseInt(hexChar, 16);
+        var b = v.toString(2);
+        while (b.length < 4) b = '0' + b;
+        return b;
+      }
+
+      function draw(val) {
+        svg.innerHTML = '';
+        var hex = toHex(val);
+        var bin = toBin(val);
+
+        // Three representations header
+        svg.appendChild(svgText('DECIMAL', 110, 30, { size: '12', weight: '600', fill: '#999' }));
+        svg.appendChild(svgText('HEXADECIMAL', 300, 30, { size: '12', weight: '600', fill: '#999' }));
+        svg.appendChild(svgText('BINARY', 490, 30, { size: '12', weight: '600', fill: '#999' }));
+
+        // Values
+        svg.appendChild(svgText(String(val), 110, 68, { size: '32', weight: '800', fill: '#2d2d2d' }));
+        svg.appendChild(svgText('0x' + hex, 300, 68, { size: '32', weight: '800', fill: '#7B61FF' }));
+        svg.appendChild(svgText(bin, 490, 68, { size: '24', weight: '800', fill: '#4A90D9', font: 'JetBrains Mono, SF Mono, monospace' }));
+
+        // Arrows
+        svg.appendChild(svgText('\u2192', 200, 60, { size: '24', fill: '#ddd' }));
+        svg.appendChild(svgText('\u2192', 400, 60, { size: '24', fill: '#ddd' }));
+
+        // Hex-to-Binary mapping section
+        svg.appendChild(svgEl('line', { x1: 50, y1: 95, x2: 550, y2: 95, stroke: '#ddd', 'stroke-width': '1' }));
+        svg.appendChild(svgText('HEX \u2194 BINARY MAPPING', W/2, 120, { size: '13', weight: '700', fill: '#666' }));
+
+        var hexDigits = hex.split('');
+        var sectionWidth = 220;
+        var startX = W/2 - (hexDigits.length * sectionWidth) / 2 + sectionWidth / 2;
+
+        var nibbleColors = ['#7B61FF', '#4A90D9'];
+
+        for (var d = 0; d < hexDigits.length; d++) {
+          var cx = startX + d * sectionWidth;
+          var hexChar = hexDigits[d];
+          var nibble = nibbleToBin(hexChar);
+          var nibbleVal = parseInt(hexChar, 16);
+          var col = nibbleColors[d];
+
+          // Hex digit box
+          svg.appendChild(svgEl('rect', { x: cx - 30, y: 135, width: 60, height: 55, rx: 8, fill: col, opacity: '0.1' }));
+          svg.appendChild(svgText(hexChar, cx, 172, { size: '28', weight: '800', fill: col }));
+          svg.appendChild(svgText('= ' + nibbleVal + ' in decimal', cx, 205, { size: '11', fill: '#999' }));
+
+          // Arrow down
+          svg.appendChild(svgEl('polygon', { points: (cx-6) + ',215 ' + (cx+6) + ',215 ' + cx + ',225', fill: '#ddd' }));
+
+          // Binary nibble - individual bits
+          var bitStartX = cx - 48;
+          for (var b = 0; b < 4; b++) {
+            var bx = bitStartX + b * 25;
+            var bitVal = nibble[b];
+            svg.appendChild(svgEl('rect', { x: bx, y: 232, width: 22, height: 30, rx: 4, fill: bitVal === '1' ? col : '#eee', opacity: bitVal === '1' ? '0.2' : '1' }));
+            svg.appendChild(svgText(bitVal, bx + 11, 252, { size: '16', weight: '700', fill: bitVal === '1' ? col : '#ccc', font: 'JetBrains Mono, SF Mono, monospace' }));
+          }
+
+          // Power labels below bits
+          var powerLabels = ['8','4','2','1'];
+          for (var p = 0; p < 4; p++) {
+            var px = bitStartX + p * 25;
+            svg.appendChild(svgText(powerLabels[p], px + 11, 278, { size: '10', fill: '#bbb' }));
+          }
+        }
+      }
+
+      var slider = document.getElementById('hexbin-slider');
+      slider.addEventListener('input', function() {
+        var v = parseInt(slider.value);
+        document.getElementById('hexbin-val').textContent = v;
+        draw(v);
+      });
+      draw(214);
+    })();
+
+    // ===== INTERACTIVE 5: RGB COLOR EXPLORER =====
+    (function() {
+      var svg = document.getElementById('color-svg');
+      if (!svg) return;
+      var W = 600, H = 280;
+
+      function toHex(n) {
+        var h = n.toString(16).toUpperCase();
+        return h.length === 1 ? '0' + h : h;
+      }
+
+      function draw() {
+        svg.innerHTML = '';
+        var r = parseInt(document.getElementById('color-r').value);
+        var g = parseInt(document.getElementById('color-g').value);
+        var b = parseInt(document.getElementById('color-b').value);
+
+        document.getElementById('color-r-val').textContent = r;
+        document.getElementById('color-g-val').textContent = g;
+        document.getElementById('color-b-val').textContent = b;
+
+        var hexR = toHex(r);
+        var hexG = toHex(g);
+        var hexB = toHex(b);
+        var hexCode = '#' + hexR + hexG + hexB;
+        var rgbColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+        // Large color swatch
+        svg.appendChild(svgEl('rect', { x: 30, y: 20, width: 180, height: 180, rx: 12, fill: rgbColor }));
+        svg.appendChild(svgEl('rect', { x: 30, y: 20, width: 180, height: 180, rx: 12, fill: 'none', stroke: '#ddd', 'stroke-width': '1' }));
+
+        // Hex code label
+        svg.appendChild(svgText(hexCode, 120, 225, { size: '20', weight: '800', fill: '#2d2d2d' }));
+        svg.appendChild(svgText('rgb(' + r + ', ' + g + ', ' + b + ')', 120, 248, { size: '12', fill: '#999' }));
+
+        // Channel breakdown on the right
+        var rightX = 280;
+        var channels = [
+          { label: 'RED', value: r, hex: hexR, color: '#E74C3C', y: 30 },
+          { label: 'GREEN', value: g, hex: hexG, color: '#27AE60', y: 90 },
+          { label: 'BLUE', value: b, hex: hexB, color: '#3498DB', y: 150 }
+        ];
+
+        channels.forEach(function(ch) {
+          // Channel label
+          svg.appendChild(svgText(ch.label, rightX, ch.y + 15, { size: '11', weight: '700', fill: ch.color, anchor: 'start' }));
+
+          // Bar background
+          svg.appendChild(svgEl('rect', { x: rightX, y: ch.y + 22, width: 250, height: 16, rx: 8, fill: '#eee' }));
+
+          // Bar fill
+          var barW = (ch.value / 255) * 250;
+          if (barW > 0) {
+            svg.appendChild(svgEl('rect', { x: rightX, y: ch.y + 22, width: barW, height: 16, rx: 8, fill: ch.color, opacity: '0.7' }));
+          }
+
+          // Value labels
+          svg.appendChild(svgText(String(ch.value), rightX + 260, ch.y + 17, { size: '14', weight: '700', fill: '#2d2d2d', anchor: 'start' }));
+          svg.appendChild(svgText('0x' + ch.hex, rightX + 260, ch.y + 36, { size: '12', weight: '600', fill: ch.color, anchor: 'start' }));
+        });
+
+        // Binary representation at bottom
+        var binY = 220;
+        svg.appendChild(svgText('Full binary:', rightX, binY + 8, { size: '11', fill: '#999', anchor: 'start' }));
+        var binR = r.toString(2); while (binR.length < 8) binR = '0' + binR;
+        var binG = g.toString(2); while (binG.length < 8) binG = '0' + binG;
+        var binB = b.toString(2); while (binB.length < 8) binB = '0' + binB;
+        svg.appendChild(svgText(binR + ' ' + binG + ' ' + binB, rightX, binY + 28, { size: '13', weight: '600', fill: '#666', anchor: 'start', font: 'JetBrains Mono, SF Mono, monospace' }));
+        svg.appendChild(svgText('= 24 bits = 3 bytes', rightX, binY + 48, { size: '11', fill: '#999', anchor: 'start' }));
+      }
+
+      ['color-r', 'color-g', 'color-b'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', draw);
+      });
+      draw();
+    })();
+  </script>
+</body>
+</html>

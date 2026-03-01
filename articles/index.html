@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles — Tech for Non-Technical Founders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --paper: #f5f0e8;
+    --paper-dark: #ebe5d9;
+    --red: #c23a22;
+    --red-dark: #9e2f1b;
+    --grey: #7a756b;
+    --grey-light: #b5b0a6;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --body: 'Newsreader', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--red); color: var(--paper); }
+
+  header {
+    padding: 2.5rem 2rem 0;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  header a {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  header a:hover { color: var(--red); }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .page h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+  .page-sub {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--grey);
+    margin-bottom: 3.5rem;
+  }
+
+  /* Phase groups */
+  .phase-group {
+    margin-bottom: 3rem;
+  }
+  .phase-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--paper-dark);
+  }
+
+  /* Article list */
+  .article {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--paper-dark);
+    transition: padding-left 0.2s;
+  }
+  .article:first-of-type {
+    padding-top: 0;
+  }
+  .article:hover {
+    padding-left: 0.5rem;
+  }
+  .article-number {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    color: var(--grey-light);
+  }
+  .article-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    line-height: 1.3;
+    margin: 0.2rem 0 0.3rem;
+    transition: color 0.2s;
+  }
+  .article:hover .article-title {
+    color: var(--red);
+  }
+  .article-desc {
+    font-size: 0.95rem;
+    color: var(--grey);
+    line-height: 1.5;
+  }
+
+  /* Locked / coming soon */
+  .article.locked {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .article.locked .article-title::after {
+    content: ' — coming soon';
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-light);
+    vertical-align: middle;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 1.5rem 1.5rem 0; }
+    .page { padding: 2rem 1.5rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="../">&larr; Home</a>
+</header>
+
+<div class="page">
+  <h1>Articles</h1>
+  <p class="page-sub">One concept at a time. Start from the top.</p>
+
+  <!-- PHASE 1 -->
+  <div class="phase-group">
+    <div class="phase-label">Phase 1 &mdash; How Computers Actually Work</div>
+
+    <a href="../01-number-systems/" class="article">
+      <div class="article-number">01</div>
+      <div class="article-title">How Computers Count &mdash; Binary, Decimal, and Hexadecimal</div>
+      <div class="article-desc">The number systems that underpin everything. Why your color codes start with #.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">02</div>
+      <div class="article-title">Why a Byte? Why 8 Bits?</div>
+      <div class="article-desc">The history behind computing's fundamental unit, and why your ISP lies about your internet speed.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">03</div>
+      <div class="article-title">How Computers Store Every Language on Earth</div>
+      <div class="article-desc">ASCII, Unicode, UTF-8 &mdash; and why your app shows garbled text sometimes.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">04</div>
+      <div class="article-title">How JPEG Shrinks Your Photos 10x Without You Noticing</div>
+      <div class="article-desc">Lossless vs lossy compression, and why your engineers argue about image formats.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">05</div>
+      <div class="article-title">CPU vs GPU &mdash; Why AI Costs What It Costs</div>
+      <div class="article-desc">What "any task" means, why NVIDIA is worth $3 trillion, and your AI cost structure.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">06</div>
+      <div class="article-title">One Big Server or Many Small Ones?</div>
+      <div class="article-desc">Scaling up vs scaling out. Load balancers, statelessness, and when to worry about it.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">07</div>
+      <div class="article-title">What Those Milliseconds Actually Mean</div>
+      <div class="article-desc">Network latency, the memory hierarchy, and why your app feels slow.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">08</div>
+      <div class="article-title">Caching &mdash; The Most Important Idea in Tech</div>
+      <div class="article-desc">How one concept appears at every layer of computing, and the hardest problem it creates.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">09</div>
+      <div class="article-title">Your Cloud Bill, Decoded</div>
+      <div class="article-desc">Every AWS line item mapped to CPU, RAM, storage, or network. That's all there is.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">10</div>
+      <div class="article-title">What Docker Actually Does</div>
+      <div class="article-desc">VMs, containers, Kubernetes &mdash; and why "it works on my machine" is the most dreaded sentence in engineering.</div>
+    </a>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-group">
+    <div class="phase-label">Phase 2 &mdash; How Software Is Built</div>
+
+    <a href="#" class="article locked">
+      <div class="article-number">11</div>
+      <div class="article-title">Programming Languages &mdash; What Makes Them Different</div>
+      <div class="article-desc">Why your team chose Python, JavaScript, or Go &mdash; and what that choice costs you.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">12</div>
+      <div class="article-title">How Code Runs</div>
+      <div class="article-desc">Runtime, memory management, garbage collection &mdash; what happens after your developer clicks "run."</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">13</div>
+      <div class="article-title">Why Software Breaks</div>
+      <div class="article-desc">Errors, bugs, and debugging &mdash; how engineers find and fix problems.</div>
+    </a>
+
+    <a href="#" class="article locked">
+      <div class="article-number">14</div>
+      <div class="article-title">Testing &mdash; Writing Code to Test Your Code</div>
+      <div class="article-desc">Why engineers write code that doesn't ship to users, and what happens when they don't.</div>
+    </a>
+  </div>
+
+  <!-- PHASE 3+ teaser -->
+  <div class="phase-group">
+    <div class="phase-label">Phases 3&ndash;10 &mdash; Coming Soon</div>
+
+    <div class="article locked" style="pointer-events:none;">
+      <div class="article-number">&hellip;</div>
+      <div class="article-title">Data, APIs, Security, Scaling, AI, System Design, and more</div>
+      <div class="article-desc">40+ more articles covering the full journey from "what is a database" to "how to evaluate your CTO's technical decisions."</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
