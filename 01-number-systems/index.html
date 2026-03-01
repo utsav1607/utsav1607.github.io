@@ -461,7 +461,7 @@
 
   <!-- Nutshell Summary -->
   <div class="nutshell">
-    Every number you have ever seen is built from a handful of symbols arranged in positions. Computers use just two symbols (binary), humans prefer ten (decimal), and engineers bridge the gap with sixteen (hexadecimal). Understanding how these three systems work &mdash; and why they exist &mdash; is the bedrock of every technical decision in your company.
+    Every number you have ever seen is built from a handful of symbols arranged in positions. Computers use just two symbols (binary), humans prefer ten (decimal), and engineers bridge the gap with sixteen (hexadecimal). Understanding how these three systems work &mdash; and why they exist &mdash; is the alphabet. The rest of this series won&rsquo;t make sense without it.
   </div>
 
   <hr class="full-width" style="max-width: 900px; margin-left: auto; margin-right: auto;">
@@ -488,7 +488,7 @@
     <div class="post-body" id="section-intro">
       <p>You use numbers every single day. Prices, dates, phone numbers, addresses. But have you ever stopped to think about <em>how</em> numbers actually work? Not the math &mdash; the <em>system</em> itself. Why do we write &ldquo;10&rdquo; when we run out of single digits? Why not &ldquo;A&rdquo; or some other symbol?</p>
 
-      <p>Understanding this is the key to understanding how computers think. And if you run a tech company, this is the bedrock everything else sits on &mdash; from how your app stores data, to why your designer writes <code>#FF5733</code> for a color, to why your server has 4 GB of RAM and not 4,000,000,000 bytes (spoiler: it actually has 4,294,967,296).</p>
+      <p>Understanding this helps you understand how computers think. It won&rsquo;t change your Monday morning, but it&rsquo;s the alphabet &mdash; the rest of this series won&rsquo;t make sense without it. And along the way, you&rsquo;ll finally get why your designer writes <code>#FF5733</code> for a color, and why your server has 4 GB of RAM and not 4,000,000,000 bytes (spoiler: it actually has 4,294,967,296).</p>
 
       <p>Let&rsquo;s start from the very beginning.</p>
     </div>
@@ -614,7 +614,7 @@ Value:        ...  1,000    100      10       1</div>
 
       <p>That last one is exactly like 5 + 5 = 10 in decimal. You&rsquo;ve run out of symbols, so you carry.</p>
 
-      <p>Your computer does exactly this &mdash; but with 64 digits at a time, billions of times per second. Every calculation your app performs, every financial transaction, every physics simulation in a game &mdash; it all comes down to this basic operation happening at incredible speed.</p>
+      <p>Your computer does exactly this &mdash; but with 64 digits at a time, billions of times per second.</p>
     </div>
 
     <!-- Section III: Hexadecimal -->
@@ -657,7 +657,8 @@ Value:        ...  1,000    100      10       1</div>
       <p>Without the prefix, &ldquo;10&rdquo; is ambiguous &mdash; is it decimal ten or hex sixteen? The <code>0x</code> removes all doubt. You&rsquo;ll see this prefix in programming languages, debugger output, memory addresses, and technical documentation.</p>
 
       <div class="sidenote">
-        <p><strong>Fun hex values:</strong> Programmers sometimes use hex values that spell words. <code>0xDEADBEEF</code> marks uninitialized memory. <code>0xCAFEBABE</code> is the magic number at the start of every Java class file. <code>0xFEEDFACE</code> appears in macOS executables. They serve real purposes &mdash; they&rsquo;re easy to spot in a wall of hex data.</p>
+        <p><strong>Fun hex values:</strong> Programmers use hex values that spell words: <code>0xDEADBEEF</code> (uninitialized memory marker), <code>0xCAFEBABE</code> (Java class file signature), <code>0xFEEDFACE</code> (macOS executable signature). The constraint &mdash; only digits A&ndash;F and 0&ndash;9 &mdash; forces creativity: <code>0</code> stands in for <code>O</code>, <code>1</code> for <code>I</code>, <code>5</code> for <code>S</code>.</p>
+        <p><strong>How DEADBEEF actually works:</strong> When your program asks the OS for a chunk of memory, the OS fills it with <code>DEADBEEF</code> repeated over and over <em>before</em> handing it to you. Think of it like painting all the walls of a new house bright orange. Your program is supposed to write real data into that memory before reading it. But if there&rsquo;s a bug and it reads <em>before</em> writing, the engineer sees <code>DEADBEEF</code> in the debugger and immediately knows: &ldquo;I&rsquo;m reading memory I never initialized.&rdquo; Without this pattern, the memory would contain random leftover data from whatever program used it last. Note that <code>0xDEADBEEF</code> is exactly 32 bits &mdash; 8 hex digits &times; 4 bits = 32 bits &mdash; so it fills one complete word of memory on a 32-bit system.</p>
       </div>
     </div>
 
@@ -723,7 +724,7 @@ Value:        ...  1,000    100      10       1</div>
       <p><strong>Hexadecimal (base 16)</strong> exists because humans need a way to read binary data without going cross-eyed. It&rsquo;s a compact, human-friendly shorthand where one hex digit perfectly represents four binary digits. You&rsquo;ll see it in color codes, memory addresses, network identifiers, and throughout your codebase.</p>
 
       <div class="sidenote">
-        <p><strong>The takeaway:</strong> As a founder, you don&rsquo;t need to do these conversions daily. But understanding <em>why</em> your product&rsquo;s color is <code>#FF5733</code>, <em>why</em> your server has 4,294,967,296 bytes of RAM instead of a round number, and <em>why</em> there&rsquo;s always a power of 2 lurking behind every technical spec &mdash; that understanding makes you a better leader of a technical team.</p>
+        <p><strong>The takeaway:</strong> None of this will change how you run your company. It&rsquo;s basic math. But now when you see <code>#FF5733</code>, or 4,294,967,296 bytes of RAM, or &ldquo;64-bit architecture&rdquo; &mdash; those aren&rsquo;t mysterious incantations anymore. They&rsquo;re just numbers in different bases. This was the alphabet. The interesting stuff is built on top of it.</p>
       </div>
 
       <p>You now speak a little bit of the language your computer thinks in.</p>
